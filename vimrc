@@ -206,6 +206,7 @@ nnoremap <Tab> <Plug>(vimshell_zsh_complete)
 
 "http://qiita.com/tekkoc/items/98adcadfa4bdc8b5a6ca
 "sを使ってウインドウ関連の移動など
+"slで右のウインドウ、shで左のウインドウに移動
 nnoremap s <Nop>
 nnoremap sj <C-w>j
 nnoremap sk <C-w>k
