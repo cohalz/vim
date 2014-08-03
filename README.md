@@ -5,3 +5,4 @@ vim
 3. ターミナルで```mv ~/Downloads/vim-master ~/.vim``` を実行
 4. MacVimをhttps://github.com/splhack/macvim/releases/tag/20140731 からインストール
 5. MacVimを起動し:NeoBundleInstallとする
+6. NeoBundleInstallが完了したらVimを再起動する
