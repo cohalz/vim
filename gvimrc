@@ -91,4 +91,4 @@ hi LineNr guifg=#777777
 hi Search gui=underline guifg=#ff8787 guibg=NONE
 
 "HaskellのGhcModTypeを使用した際のハイライトを設定
-hi ghcmodType guifg=#ff8787 gui=underline
+hi ghcmodType guifg=NONE gui=NONE
