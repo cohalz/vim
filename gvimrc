@@ -35,8 +35,6 @@ set lines=999935     " 行数
 set guifontwide=Kibitaki-Light:h14
 set guifont=Kibitaki-Light:h14
 
-endif
-
 "swapfile(バックアップ)を作らない
 set noswapfile
 
