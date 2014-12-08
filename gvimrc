@@ -14,7 +14,7 @@ set guioptions-=l     "ウインドウの左スクロールバー
 set guioptions-=L     "分割時の左のスクロールバー
 set guioptions-=b     "下スクロールバーなし
 
-set showtabline=2    " 常にタブ表示
+set showtabline=0    " 常にタブ表示
 
 set imdisable        " IME OFF
 set antialias        " アンチエイリアス
@@ -34,6 +34,7 @@ set lines=999935     " 行数
 " フォント設定
 set guifontwide=Kibitaki-Light:h14
 set guifont=Kibitaki-Light:h14
+
 
 "swapfile(バックアップ)を作らない
 set noswapfile
@@ -90,3 +91,5 @@ hi Search gui=underline guifg=#ff8787 guibg=NONE
 
 "HaskellのGhcModTypeを使用した際のハイライトを設定
 hi ghcmodType guifg=NONE gui=NONE
+
+set lazyredraw
