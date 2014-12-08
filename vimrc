@@ -1,12 +1,26 @@
 set nocompatible
 filetype off
 set autoread
-if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/neobundle.vim
-  call neobundle#rc(expand('~/.vim/bundle'))
-endif
+ " Note: Skip initialization for vim-tiny or vim-small.
+ if !1 | finish | endif
 
+ if has('vim_starting')
+   set nocompatible               " Be iMproved
+
+   " Required:
+   set runtimepath+=~/.vim/bundle/neobundle.vim/
+ endif
+
+ " Required:
+ call neobundle#begin(expand('~/.vim/bundle/'))
+
+ " Let NeoBundle manage NeoBundle
+ " Required:
+ NeoBundleFetch 'Shougo/neobundle.vim'
 " ここにインストールしたいプラグインのリストを書く
+NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
+NeoBundle 'rbtnn/mario.vim'
+NeoBundle 'rbtnn/game_engine.vim'
 NeoBundle 'LeafCage/foldCC'
 NeoBundle 'Yggdroot/indentLine'
 NeoBundle 'basyura/TweetVim'
@@ -33,13 +47,13 @@ NeoBundle 'kannokanno/previm'
 NeoBundle 'mattn/gist-vim'
 NeoBundle 'mattn/webapi-vim'
 NeoBundle 'saihoooooooo/glowshi-ft.vim'
+NeoBundle 'rhysd/vim-operator-surround'
 NeoBundle 'scrooloose/syntastic'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'thinca/vim-textobj-plugins'
 NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'tpope/vim-commentary'
-NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-abolish'
 NeoBundle 'houtsnip/vim-emacscommandline'
 NeoBundle 'tyru/open-browser.vim'
@@ -50,7 +64,9 @@ NeoBundle 'vim-jp/vital.vim'
 NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'eagletmt/unite-haddock'
 NeoBundle 'Shougo/unite.vim' 
+NeoBundle 'Shougo/neomru.vim'
 NeoBundle 'Shougo/neocomplete.vim'
+NeoBundle 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/neosnippet.vim'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neosnippet-snippets'
@@ -64,25 +80,44 @@ NeoBundle 'Shougo/vimproc', {
       \     'unix' : 'make -f make_unix.mak',
       \    },
       \ }
+ call neobundle#end()
 
-filetype plugin on
-filetype indent on
+ " Required:
+ filetype plugin indent on
 
-" neocomplete用設定
-" Tabで補完、C-kで展開
+ " If there are uninstalled bundles found on startup,
+ " this will conveniently prompt you to install them.
+ NeoBundleCheck
+
 if filereadable(expand('~/.vim/etc/neocomplete.vim')) 
   source ~/.vim/etc/neocomplete.vim
 endif
 
-" カーソルハイライト設定
 if filereadable(expand('~/.vim/etc/cursorhi.vim')) 
   source ~/.vim/etc/cursorhi.vim
 endif
 
-" lightline設定
 if filereadable(expand('~/.vim/etc/lightline.vim')) 
   source ~/.vim/etc/lightline.vim
 endif
+
+"インクリメンタルサーチ
+set incsearch
+
+"http://d.hatena.ne.jp/osyo-manga/20140121/1390309901
+"元との違いはカーソル下が記号の場合、空白区切りの単位でハイライトするようにしたこと
+  " 1 が設定されていれば有効になる
+  let g:enable_highlight_cursor_word = 1
+
+
+  augroup Vimrc
+    autocmd!
+    autocmd VimEnter * VimFiler -split -simple -winwidth=20 -no-quit 
+    autocmd BufNewFile,BufRead,BufWritePost * retab! | IndentLinesReset
+    autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+  augroup END
+
+
 
 " e .などでvimfilerが起動できるように
 let g:vimfiler_as_default_explorer = 1
@@ -97,7 +132,8 @@ let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets, ~/.vim
 "http://blog.supermomonga.com/articles/vim/vimshell-dynamicprompt.html
 
 "http://ameblo.jp/toki917/entry-11559823574.html
-autocmd VimEnter * VimFiler -split -simple -winwidth=20 -no-quit
+augroup VimFilerOpen
+augroup END
 
 "VimFilerのセーフモードをオフに
 let g:vimfiler_safe_mode_by_default = 0
@@ -106,31 +142,25 @@ let g:vimfiler_safe_mode_by_default = 0
 set list listchars=tab:\¦\
 let g:indentLine_color_term = 111
 
-"TweetVimのセパレート表示をなしに
 let g:tweetvim_empty_separator = 1
 
-"保存するたびにIndentLineを再設定
-autocmd BufNewFile,BufRead,BufWritePost * retab! | IndentLinesReset
 let g:indentLine_faster = 1
 
 "http://hail2u.net/blog/software/vim-wildfire.html
-"wildfireの設定
-"Enterで選択範囲拡大、S-Enterで縮小
 let g:wildfire_water_map = '<S-Enter>'
 let g:wildfire_objects = ["ii", "i'", 'i"', "i)", "i]", "i}", "ip", "it"]
 
 let g:gist_clip_command = 'pbcopy'
 let g:gist_detect_filetype = 1
-"ここにusernameを設定
-let g:github_user = 'username'
+let g:github_user = 'cohalz'
 
 "<Leader>mでマークダウンのプレビュー表示
 nnoremap <silent> <Leader>m :PrevimOpen<CR>
 
 "Haskell関連
 "PATHは各自合ったように変更
-let $PATH = $PATH . ':' . expand('~/.local/ghc-7.8.3/bin')
 let $PATH = $PATH . ':' . expand('~/.cabal/bin')
+let $PATH = $PATH . ':' . expand('/usr/local/bin')
 let g:ghcmod_hlint_options = ['--ignore=Redundant $']
 let g:ghcmod_type_highlight = 'ghcmodType'
 
@@ -160,6 +190,8 @@ nnoremap g* g*zz
 nnoremap g# g#zz
 
 "<C-j>でEsc
+inoremap <SID>I_won’t_ever_type_this <Plug>IMAP_JumpForward
+nnoremap <SID>I_won’t_ever_type_this <Plug>IMAP_JumpForward
 imap <C-j> <Esc>
 nnoremap <C-j> <Esc>
 vnoremap <C-j> <Esc>
@@ -169,9 +201,9 @@ nnoremap <C-o> o
 
 " Ctrl+:でコマンドモードへ、設定するにはhttps://www.dropbox.com/s/vklvp9qbq7mz1w0/private.xml からKeyRemap4Macbookで"Vim Keybind"をオンにしてください
 "USキーボードMac以外の動作は保証できません
-inoremap  <C-o>:
-nnoremap  :
-cnoremap  <Esc>:
+inoremap  <C-o>:
+nnoremap  :
+cnoremap  <Esc>:
 
 "Ctrl+hやlでインサートモードも動けるように
 inoremap <C-l> <C-o>a
@@ -216,9 +248,6 @@ nnoremap sp gT
 nnoremap st :<C-u>tabnew<CR>
 nnoremap sv :<C-u>vs<CR>
 
-"alias about vim-surround
-"s)などで今いる単語をカッコで囲むなど
-map s ysiw
 
 "ハイライトを消す
 nnoremap <silent> - :noh<CR>
@@ -247,10 +276,6 @@ noremap <silent> <Leader><Leader> :GhcModTypeClear<CR>
 nnoremap <Leader>i :<C-u>UniteWithCursorWord haskellimport<Cr>
 nnoremap <Leader>k :<C-u>UniteWithCursorWord -auto-preview hoogle<CR>
 
-"ホームポジションから<Esc>
-inoremap jk <Esc>
-inoremap kj <Esc>
-
 "行頭行末に移動
 map <Space>h ^
 map <Space>l $
@@ -267,3 +292,20 @@ noremap <Plug>N N
 map * <Plug>(visualstar-*)<Plug>N 
 map # <Plug>(visualstar-#)<Plug>N
 
+
+let tex_flavor='latex'
+set grepprg=grep\ -nH\ $*
+set shellslash
+let g:Tex_DefaultTargetFormat='pdf'
+let g:Tex_CompileRule_dvi='platex --interaction=nonstopmode $*'
+let g:Tex_FormatDependency_pdf='dvi,pdf'
+
+" PDFはPreview.appで開く
+let g:Tex_ViewRule_pdf='open -a Preview.app'
+
+nnoremap <silent> <Space><Space> :<C-u>Unite file_mru<CR>
+
+" operator mappings
+map <silent>sa <Plug>(operator-surround-append)
+map <silent>sd <Plug>(operator-surround-delete)
+map <silent>sr <Plug>(operator-surround-replace)
